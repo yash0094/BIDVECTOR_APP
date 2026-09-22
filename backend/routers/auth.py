@@ -148,7 +148,11 @@ def google_sign_in(body: dict):
         from google.oauth2 import id_token as google_id_token
         idinfo = google_id_token.verify_oauth2_token(
             credential, google_requests.Request(), GOOGLE_CLIENT_ID)
-    except Exception:
+    except Exception as exc:
+        # The client only gets a generic message (the real reason can be
+        # security-sensitive -- wrong audience, expired token, etc.), but the
+        # actual exception goes to the server log so this is debuggable.
+        print(f"[google-signin] verification failed: {exc!r}")
         raise HTTPException(401, "Google sign-in failed: invalid or expired credential")
 
     if not idinfo.get("email_verified", False):
