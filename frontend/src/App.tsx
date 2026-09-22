@@ -29,6 +29,7 @@ import UnderEvaluation from './pages/government/UnderEvaluation'
 import AnomalySignals from './pages/government/AnomalySignals'
 import InvestigationQueue from './pages/government/InvestigationQueue'
 import VendorRegistry from './pages/government/VendorRegistry'
+import PendingApprovals from './pages/government/PendingApprovals'
 
 import PublicSearchTenders from './pages/public/SearchTenders'
 import PublicAwardsResults from './pages/public/AwardsResults'
@@ -101,6 +102,7 @@ export default function App() {
       <Route path="/gov/anomaly-signals" element={<RequireRole role="government"><GovernmentShell><AnomalySignals /></GovernmentShell></RequireRole>} />
       <Route path="/gov/investigation-queue" element={<RequireRole role="government"><GovernmentShell><InvestigationQueue /></GovernmentShell></RequireRole>} />
       <Route path="/gov/vendor-registry" element={<RequireRole role="government"><GovernmentShell><VendorRegistry /></GovernmentShell></RequireRole>} />
+      <Route path="/gov/pending-approvals" element={<RequireRole role="government"><GovernmentShell><PendingApprovals /></GovernmentShell></RequireRole>} />
       <Route path="/gov/settings" element={<RequireRole role="government"><GovernmentShell><Settings /></GovernmentShell></RequireRole>} />
       <Route path="/gov/help" element={<RequireRole role="government"><GovernmentShell><Help /></GovernmentShell></RequireRole>} />
 

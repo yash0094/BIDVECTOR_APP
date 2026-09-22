@@ -1,17 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* BidVector brand green */
-  --color-brand-50: #ecfdf5;
-  --color-brand-100: #d1fae5;
-  --color-brand-200: #a7f3d0;
-  --color-brand-300: #6ee7b7;
-  --color-brand-400: #34d399;
-  --color-brand-500: #16a34a;
-  --color-brand-600: #15803d;
-  --color-brand-700: #166534;
-  --color-brand-800: #14532d;
-  --color-brand-900: #0f3d22;
+  /* BidVector brand indigo/blue (matches the GovProcure reference) */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #4f46e5;
+  --color-brand-600: #4338ca;
+  --color-brand-700: #3730a3;
+  --color-brand-800: #312e81;
+  --color-brand-900: #1e1b4b;
+
+  /* Amber accent, used sparingly for register/highlight CTAs, as in the reference. */
+  --color-accent-400: #fbbf24;
+  --color-accent-500: #f59e0b;
+  --color-accent-600: #d97706;
 
   --color-ink-50: #f7f8fa;
   --color-ink-100: #eef0f3;
@@ -31,13 +36,14 @@
   --color-danger-500: #c23a34;
   --color-danger-100: #fbe6e4;
 
-  /* Government portal's own dark navy identity. */
+  /* Government portal's own dark-indigo identity -- darker than the
+     Bidder portal's brand indigo, so the two stay visually distinct. */
   --color-gov-50: #eef2f9;
   --color-gov-100: #dbe4f2;
-  --color-gov-500: #1e3a5f;
-  --color-gov-600: #0f2744;
-  --color-gov-700: #0a1d35;
-  --color-gov-900: #0f172a;
+  --color-gov-500: #4338ca;
+  --color-gov-600: #312e81;
+  --color-gov-700: #23204f;
+  --color-gov-900: #16143a;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;

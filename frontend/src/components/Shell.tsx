@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Logo, LogoMark } from './Logo'
+import { Footer } from './Footer'
 import { useAuth } from '../lib/auth'
 import {
   IconHome, IconSearch, IconColumns, IconShieldAlert, IconWallet, IconBarChart,
@@ -45,6 +46,7 @@ const GOV_NAV: NavSection[] = [
     { to: '/gov/anomaly-signals', label: 'Anomaly Signals', icon: (p) => <IconAlertTriangle {...p} /> },
     { to: '/gov/investigation-queue', label: 'Investigation Queue', icon: (p) => <IconSearch {...p} /> },
     { to: '/gov/vendor-registry', label: 'Vendor Registry', icon: (p) => <IconLandmark {...p} /> },
+    { to: '/gov/pending-approvals', label: 'Pending Approvals', icon: (p) => <IconUserCircle {...p} /> },
   ]},
   { label: '', items: [
     { to: '/gov/settings', label: 'Settings', icon: (p) => <IconSettings {...p} /> },
@@ -110,7 +112,7 @@ export function BidderShell({ children }: { children: ReactNode }) {
           </div>
         </aside>
 
-        <div className="ml-64 min-h-screen flex-1">
+        <div className="ml-64 flex min-h-screen flex-1 flex-col">
           <header className="no-print sticky top-0 z-10 flex items-center gap-3 border-b border-ink-200 bg-white px-6 py-3">
             <div className="ml-auto flex items-center gap-3">
               <button onClick={() => nav('/app/alerts')} className="relative rounded-md p-1.5 text-ink-500 hover:bg-ink-50" aria-label="Alerts">
@@ -121,7 +123,8 @@ export function BidderShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </header>
-          <main className="mx-auto max-w-[1400px] p-6">{children}</main>
+          <main className="mx-auto w-full max-w-[1400px] flex-1 p-6">{children}</main>
+          <Footer />
         </div>
       </div>
     </div>
@@ -179,7 +182,7 @@ export function GovernmentShell({ children }: { children: ReactNode }) {
           </div>
         </aside>
 
-        <div className="ml-64 min-h-screen flex-1">
+        <div className="ml-64 flex min-h-screen flex-1 flex-col">
           <header className="no-print sticky top-0 z-10 flex items-center gap-3 border-b border-ink-200 bg-white px-6 py-3">
             <div className="ml-auto flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full text-[12px] font-semibold text-white"
@@ -188,7 +191,8 @@ export function GovernmentShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </header>
-          <main className="mx-auto max-w-[1400px] p-6">{children}</main>
+          <main className="mx-auto w-full max-w-[1400px] flex-1 p-6">{children}</main>
+          <Footer />
         </div>
       </div>
     </div>

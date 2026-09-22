@@ -116,9 +116,12 @@ def register(body: RegisterIn):
             VALUES (?,?,?,?,?)""",
             (uid, o.org_name, o.department, o.state, o.designation))
 
-    row = db.query_one("SELECT * FROM users WHERE id=?", (uid,))
-    return {"token": make_token(uid, email, row["token_version"]),
-            "user": _public_user(row)}
+    # New accounts start pending -- no token issued yet; they can't sign in
+    # until a Government user approves them (see /api/government/pending-accounts).
+    return {"pending": True,
+            "message": "Your application has been submitted. A Government "
+                       "Official will review and activate your account before "
+                       "you can sign in."}
 
 
 @router.get("/api/config")
@@ -158,6 +161,7 @@ def google_sign_in(body: dict):
         raise HTTPException(409, "This email is registered as a government account -- "
                                  "sign in from that portal instead")
 
+    is_new = not user
     if not user:
         uid = db.execute(
             "INSERT INTO users (email,password_hash,company_name,role,created_at) "
@@ -173,6 +177,13 @@ def google_sign_in(body: dict):
              json.dumps(["GST", "PAN"]), json.dumps([]), json.dumps([]), 0.25, 12.0, 8.0))
         user = db.query_one("SELECT * FROM users WHERE id=?", (uid,))
 
+    if user["status"] != "active":
+        if is_new:
+            raise HTTPException(403, "Your application has been submitted. A Government "
+                                     "Official will review and activate your account "
+                                     "before you can sign in.")
+        raise HTTPException(403, "Your account is pending approval by a Government Official.")
+
     new_version = user["token_version"] + 1
     db.execute("UPDATE users SET token_version=? WHERE id=?", (new_version, user["id"]))
     return {"token": make_token(user["id"], user["email"], new_version),
@@ -187,6 +198,8 @@ def login(body: LoginIn):
     user = db.query_one("SELECT * FROM users WHERE email=?", (email,))
     if not user or not verify_password(body.password, user["password_hash"]):
         raise HTTPException(401, "Email or password is incorrect")
+    if user["status"] != "active":
+        raise HTTPException(403, "Your account is pending approval by a Government Official.")
     new_version = user["token_version"] + 1
     db.execute("UPDATE users SET token_version=? WHERE id=?", (new_version, user["id"]))
     return {"token": make_token(user["id"], user["email"], new_version),

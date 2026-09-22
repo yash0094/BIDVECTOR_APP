@@ -22,6 +22,7 @@ const STEPS: Record<Role, string[]> = {
     'Publish it once it looks right; it then appears to bidders under Find Tenders.',
     'When submissions come in, check Under Evaluation to compare bids and award a winner.',
     'Anomaly Signals and the Investigation Queue flag unusual bidding patterns across every tender, system-wide.',
+    'Check Pending Approvals regularly — new bidder and government accounts stay locked out until you approve them.',
   ],
 }
 
@@ -47,6 +48,7 @@ const FEATURES: Record<Role, Feature[]> = {
     { icon: (p) => <IconAlertTriangle {...p} />, title: 'Anomaly Signals', desc: 'System-wide collusion screens, ranked by risk.' },
     { icon: (p) => <IconSearch {...p} />, title: 'Investigation Queue', desc: 'The highest-risk cases that warrant a human follow-up.' },
     { icon: (p) => <IconLandmark {...p} />, title: 'Vendor Registry', desc: 'Every bidder company and their track record.' },
+    { icon: (p) => <IconUserCircle {...p} />, title: 'Pending Approvals', desc: 'Review and activate self-registered bidder and government accounts.' },
   ],
 }
 

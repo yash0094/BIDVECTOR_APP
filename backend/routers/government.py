@@ -14,6 +14,9 @@ called "Tender Caller") with cross-department oversight (what it called
     GET  /api/government/anomaly-signals    system-wide collusion screens
     GET  /api/government/investigation-queue  highest-risk buckets
     GET  /api/government/vendor-registry    every bidder company + track record
+    GET  /api/government/pending-accounts   self-registered accounts awaiting approval
+    POST /api/government/pending-accounts/{id}/approve
+    POST /api/government/pending-accounts/{id}/reject
 """
 
 import json
@@ -250,3 +253,32 @@ def vendor_registry(request: Request):
     for r in rows:
         r["hit_rate"] = r["wins"] / r["bids"] if r["bids"] else 0
     return {"vendors": rows}
+
+
+# ---------------------------------------------------------- account approval
+
+@router.get("/api/government/pending-accounts")
+def pending_accounts():
+    rows = db.query("""
+        SELECT id, email, company_name, role, created_at
+        FROM users WHERE status='pending' ORDER BY created_at, id""")
+    return {"accounts": rows}
+
+
+@router.post("/api/government/pending-accounts/{uid}/approve")
+def approve_account(uid: int):
+    if not db.query_one("SELECT id FROM users WHERE id=? AND status='pending'", (uid,)):
+        raise HTTPException(404, "No pending account with that id")
+    db.execute("UPDATE users SET status='active' WHERE id=?", (uid,))
+    return {"ok": True}
+
+
+@router.post("/api/government/pending-accounts/{uid}/reject")
+def reject_account(uid: int):
+    if not db.query_one("SELECT id FROM users WHERE id=? AND status='pending'", (uid,)):
+        raise HTTPException(404, "No pending account with that id")
+    # A rejected application never had an active session (login refuses
+    # pending accounts), so removing the row outright is safe -- there's
+    # nothing else referencing it yet.
+    db.execute("DELETE FROM users WHERE id=?", (uid,))
+    return {"ok": True}

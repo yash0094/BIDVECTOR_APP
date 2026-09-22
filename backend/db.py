@@ -29,7 +29,11 @@ CREATE TABLE IF NOT EXISTS users (
     company_name    TEXT NOT NULL,
     role            TEXT NOT NULL DEFAULT 'bidder',   -- bidder | government
     created_at      TEXT NOT NULL,
-    token_version   INTEGER NOT NULL DEFAULT 0
+    token_version   INTEGER NOT NULL DEFAULT 0,
+    -- New self-registered accounts start pending until a Government user
+    -- approves them; login is refused until status='active'. Seeded demo
+    -- accounts are inserted as already-active.
+    status          TEXT NOT NULL DEFAULT 'pending'   -- pending | active
 );
 
 -- Organisation profile for government accounts.

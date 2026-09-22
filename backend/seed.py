@@ -366,8 +366,8 @@ def seed(verbose=True):
 
     # ------------------------------------------------------------ demo bidder
     uid = db.execute(
-        "INSERT INTO users (email,password_hash,company_name,role,created_at) "
-        "VALUES (?,?,?,?,?)",
+        "INSERT INTO users (email,password_hash,company_name,role,created_at,status) "
+        "VALUES (?,?,?,?,?,'active')",
         ("demo@bidvector.in", hash_password("demo1234"),
          "Infra Build Pvt Ltd", "bidder", today.strftime("%Y-%m-%d")))
 
@@ -422,8 +422,8 @@ def seed(verbose=True):
 
     # ------------------------------------------------------- demo government
     gov_id = db.execute(
-        "INSERT INTO users (email,password_hash,company_name,role,created_at) "
-        "VALUES (?,?,?,?,?)",
+        "INSERT INTO users (email,password_hash,company_name,role,created_at,status) "
+        "VALUES (?,?,?,?,?,'active')",
         ("gov@bidvector.in", hash_password("demo1234"),
          "Procurement Cell -- CPWD", "government", today.strftime("%Y-%m-%d")))
     db.execute("""INSERT INTO org_profiles (user_id,org_name,department,state,designation)
@@ -473,8 +473,8 @@ def seed(verbose=True):
     # A second bidder in the pool submits against the same tender, so the
     # Under Evaluation queue has more than one bid to compare.
     other_uid = db.execute(
-        "INSERT INTO users (email,password_hash,company_name,role,created_at) "
-        "VALUES (?,?,?,?,?)",
+        "INSERT INTO users (email,password_hash,company_name,role,created_at,status) "
+        "VALUES (?,?,?,?,?,'active')",
         ("rival@bidvector.in", hash_password("demo1234"),
          rng.choice(firms), "bidder", today.strftime("%Y-%m-%d")))
     db.execute("""
@@ -490,6 +490,20 @@ def seed(verbose=True):
                  VALUES (?,?,?,?,?)""",
               (gov_tender_ids[0], other_uid, 8340000, "submitted",
                today.strftime("%Y-%m-%d")))
+
+    # A couple of pending applications so the Government portal's Pending
+    # Approvals screen has something to show on a first run.
+    db.execute(
+        "INSERT INTO users (email,password_hash,company_name,role,created_at,status) "
+        "VALUES (?,?,?,?,?,'pending')",
+        ("newvendor@example.com", hash_password("demo1234"),
+         "Anand Techno Projects", "bidder", today.strftime("%Y-%m-%d")))
+    db.execute(
+        "INSERT INTO users (email,password_hash,company_name,role,created_at,status) "
+        "VALUES (?,?,?,?,?,'pending')",
+        ("newofficer@example.gov.in", hash_password("demo1234"),
+         "Directorate of Municipal Administration", "government",
+         today.strftime("%Y-%m-%d")))
 
     if verbose:
         print(f"Seeded {len(awards)} historical awards, {len(bid_rows)} bids, "
