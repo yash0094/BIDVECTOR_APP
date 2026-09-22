@@ -184,10 +184,27 @@ def connect():
     return conn
 
 
+_MIGRATIONS = [
+    # (table, column, coltype) -- CREATE TABLE IF NOT EXISTS skips column
+    # additions on a table that already existed from an earlier deploy, so
+    # a database created before this column was added needs it by hand.
+    ("users", "status", "TEXT NOT NULL DEFAULT 'active'"),
+]
+
+
+def _migrate(conn):
+    for table, column, coltype in _MIGRATIONS:
+        cols = {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}
+        if column not in cols:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {coltype}")
+    conn.commit()
+
+
 def init_db():
     conn = connect()
     conn.executescript(SCHEMA)
     conn.commit()
+    _migrate(conn)
     return conn
 
 
