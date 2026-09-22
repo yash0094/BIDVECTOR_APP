@@ -72,7 +72,7 @@ def main():
     print("  ->  demo logins:")
     print("        bidder      demo@bidvector.in      / demo1234")
     print("        government  gov@bidvector.in       / demo1234")
-    print("        public portal needs no login -- open /public")
+    print("        public portal      -- sign in with either account, then open /public")
     print("\n Ctrl-C to stop.\n")
 
     if args.open:

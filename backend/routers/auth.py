@@ -1,6 +1,6 @@
 """
 Auth for both accounts-with-login roles: bidder (public/contractor) and
-government (procurement officer). The Public portal needs no account at all
+government (procurement officer). The Public portal reuses either account
 -- see routers/public.py.
 
     POST /api/auth/register              create account (+ bidder profile or org profile)

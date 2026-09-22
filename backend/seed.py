@@ -511,7 +511,7 @@ def seed(verbose=True):
         print("Demo logins:")
         print("  bidder      demo@bidvector.in / demo1234")
         print("  government  gov@bidvector.in  / demo1234")
-        print("  public portal needs no login  -- open /public")
+        print("  public portal          -- sign in with either account, then open /public")
 
 
 def _ref_prefix(buyer):

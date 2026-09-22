@@ -7,7 +7,7 @@ import {
   IconHome, IconSearch, IconColumns, IconShieldAlert, IconWallet, IconBarChart,
   IconUsers, IconFileText, IconBell, IconUserCircle,
   IconClipboardList, IconSettings, IconHelp,
-  IconBookmark, IconNetwork, IconAlertTriangle, IconLandmark, IconGauge, IconLogout,
+  IconBookmark, IconNetwork, IconAlertTriangle, IconLandmark, IconGauge, IconLogout, IconGlobe,
 } from './Icons'
 
 export interface NavItem { to: string; label: string; icon: (p: { className?: string }) => ReactNode }
@@ -33,6 +33,7 @@ const BIDDER_NAV: NavSection[] = [
   ]},
   { label: 'Account', items: [
     { to: '/app/profile', label: 'Company Profile', icon: (p) => <IconUserCircle {...p} /> },
+    { to: '/public/tenders', label: 'Public Portal', icon: (p) => <IconGlobe {...p} /> },
     { to: '/app/settings', label: 'Settings', icon: (p) => <IconSettings {...p} /> },
     { to: '/app/help', label: 'Help & Manual', icon: (p) => <IconHelp {...p} /> },
   ]},
@@ -49,6 +50,7 @@ const GOV_NAV: NavSection[] = [
     { to: '/gov/pending-approvals', label: 'Pending Approvals', icon: (p) => <IconUserCircle {...p} /> },
   ]},
   { label: '', items: [
+    { to: '/public/tenders', label: 'Public Portal', icon: (p) => <IconGlobe {...p} /> },
     { to: '/gov/settings', label: 'Settings', icon: (p) => <IconSettings {...p} /> },
     { to: '/gov/help', label: 'Help & Manual', icon: (p) => <IconHelp {...p} /> },
   ]},

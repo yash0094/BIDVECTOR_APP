@@ -12,14 +12,24 @@ platform with three portals:
 - **Government** -- one role covering both authoring/evaluating/awarding
   tenders and cross-department oversight: a Dashboard, All Tenders, Under
   Evaluation (with award), system-wide Anomaly Signals, an Investigation
-  Queue for the highest-risk cases, and a Vendor Registry.
-- **Public** -- an open, no-login transparency portal: Search Tenders,
-  Awards & Results, Price Transparency, and Statistics. No private bidder
-  data is exposed here -- only aggregate/historical figures.
+  Queue for the highest-risk cases, a Vendor Registry, and Pending Approvals
+  (activating new self-registered accounts -- see Accounts below).
+- **Public** -- a transparency view for aggregate/historical data only
+  (no private bidder data): Search Tenders, Awards & Results, Price
+  Transparency, and Statistics. Reachable by either signed-in role, not its
+  own separate account type.
 
-Each portal signs in through its own tab on `/login` (Bidder, Government)
--- Public needs no account at all and is reachable straight from the login
-screen or `/public/tenders`.
+Bidder and Government each sign in through their own tab on `/login`. There's
+no separate Public login -- the Public pages are gated behind whichever of
+those two accounts you're signed in with, reachable from a "Public Portal"
+link in either portal's sidebar.
+
+## Accounts
+
+Self-registration creates a **pending** account -- it can't sign in (email/
+password or Google) until an existing Government user approves it from the
+Government portal's Pending Approvals page. Seeded demo accounts are
+pre-activated. This applies to both bidder and government self-registrations.
 
 It is a self-contained app with its own FastAPI backend, SQLite database,
 and React frontend -- no third-party API dependency. The one optional
@@ -82,7 +92,8 @@ Then open `http://localhost:8000`. Demo logins:
 | Bidder     | `demo@bidvector.in`      | `demo1234` |
 | Government | `gov@bidvector.in`       | `demo1234` |
 
-The Public portal needs no login -- open `/public/tenders` directly.
+The Public portal needs a signed-in account (either role) -- open
+`/public/tenders` after logging in, or use the "Public Portal" sidebar link.
 
 Options: `python run.py --port 9000`, `--reseed` (wipe and regenerate demo
 data), `--seed-only` (build the DB and exit), `--open` (launch a browser).

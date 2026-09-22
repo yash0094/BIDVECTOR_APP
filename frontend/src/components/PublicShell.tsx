@@ -32,7 +32,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
           </nav>
           <button onClick={() => nav('/')}
                   className="ml-auto rounded-md bg-white/10 px-3 py-1.5 text-[13px] font-medium hover:bg-white/20">
-            &larr; Back to Login
+            &larr; Back to Dashboard
           </button>
         </div>
       </header>
@@ -48,7 +48,7 @@ export function PublicBanner() {
          style={{ background: 'linear-gradient(to right, var(--color-brand-800), var(--color-brand-600))' }}>
       <div className="text-[22px] font-extrabold">Public Tender Portal</div>
       <div className="mt-1.5 text-[13px] text-white/70">
-        Open access to government procurement data &middot; No registration required &middot; Powered by BidVector
+        Aggregate government procurement data &middot; Available to every signed-in account &middot; Powered by BidVector
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Splash } from './components/Splash'
-import { RequireRole } from './components/RequireRole'
+import { RequireRole, RequireAuth } from './components/RequireRole'
 import { BidderShell, GovernmentShell } from './components/Shell'
 import { PublicShell } from './components/PublicShell'
 import { LoginPage } from './pages/auth/LoginPage'
@@ -106,11 +106,11 @@ export default function App() {
       <Route path="/gov/settings" element={<RequireRole role="government"><GovernmentShell><Settings /></GovernmentShell></RequireRole>} />
       <Route path="/gov/help" element={<RequireRole role="government"><GovernmentShell><Help /></GovernmentShell></RequireRole>} />
 
-      {/* Public portal -- no login required at all */}
-      <Route path="/public/tenders" element={<PublicShell><PublicSearchTenders /></PublicShell>} />
-      <Route path="/public/awards" element={<PublicShell><PublicAwardsResults /></PublicShell>} />
-      <Route path="/public/price-transparency" element={<PublicShell><PublicPriceTransparency /></PublicShell>} />
-      <Route path="/public/statistics" element={<PublicShell><PublicStatistics /></PublicShell>} />
+      {/* Public portal -- gated by RequireAuth: any signed-in account, either role */}
+      <Route path="/public/tenders" element={<RequireAuth><PublicShell><PublicSearchTenders /></PublicShell></RequireAuth>} />
+      <Route path="/public/awards" element={<RequireAuth><PublicShell><PublicAwardsResults /></PublicShell></RequireAuth>} />
+      <Route path="/public/price-transparency" element={<RequireAuth><PublicShell><PublicPriceTransparency /></PublicShell></RequireAuth>} />
+      <Route path="/public/statistics" element={<RequireAuth><PublicShell><PublicStatistics /></PublicShell></RequireAuth>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

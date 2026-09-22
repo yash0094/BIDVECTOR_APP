@@ -193,7 +193,6 @@ export function LoginPage({ role }: { role: Role }) {
 }
 
 function TopBar() {
-  const nav = useNavigate()
   return (
     <header className="sticky top-0 z-10 bg-brand-800 text-white shadow-lg">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-3 px-4 sm:px-6">
@@ -208,12 +207,9 @@ function TopBar() {
           </p>
         </div>
         <nav className="ml-auto flex items-center gap-1 text-[13px]">
-          <button onClick={() => nav('/public/tenders')} className="rounded-md px-3 py-1.5 hover:bg-white/10">
-            Public Portal
-          </button>
-          <button onClick={() => nav('/app/help')} className="rounded-md px-3 py-1.5 hover:bg-white/10">
-            User Manual
-          </button>
+          <span className="rounded-md px-3 py-1.5 text-white/60">
+            Public data is available to signed-in accounts &mdash; sign in below
+          </span>
         </nav>
       </div>
     </header>
@@ -222,13 +218,12 @@ function TopBar() {
 
 function RoleTabs({ current }: { current: Role }) {
   const nav = useNavigate()
-  const tabs: { role: Role | 'public'; to: string; label: string; icon: (p: { className?: string }) => React.ReactNode }[] = [
+  const tabs: { role: Role; to: string; label: string; icon: (p: { className?: string }) => React.ReactNode }[] = [
     { role: 'bidder', to: '/login', label: 'User / Bidder', icon: (p) => <IconUserCircle {...p} /> },
     { role: 'government', to: '/login/government', label: 'Government', icon: (p) => <IconBuilding {...p} /> },
-    { role: 'public', to: '/public/tenders', label: 'Public', icon: (p) => <span className={p.className}>&#9679;</span> },
   ]
   return (
-    <div className="grid grid-cols-3 border-b border-ink-100">
+    <div className="grid grid-cols-2 border-b border-ink-100">
       {tabs.map((t) => (
         <button key={t.role} onClick={() => nav(t.to)}
                 className={`flex items-center justify-center gap-1.5 border-b-2 py-3 text-[13px] font-medium ${

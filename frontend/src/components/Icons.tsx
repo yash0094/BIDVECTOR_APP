@@ -115,6 +115,10 @@ export function IconLayers(p: IconProps) {
 export function IconChevronDown(p: IconProps) {
   return <svg {...base} {...p}><path d="M6 9l6 6 6-6" /></svg>
 }
+export function IconGlobe(p: IconProps) {
+  return <svg {...base} {...p}><circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18M12 3c2.5 2.6 4 6 4 9s-1.5 6.4-4 9c-2.5-2.6-4-6-4-9s1.5-6.4 4-9Z" /></svg>
+}
 
 export function IconGoogle(p: SVGProps<SVGSVGElement>) {
   return (

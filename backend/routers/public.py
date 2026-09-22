@@ -1,7 +1,8 @@
 """
-Public Tender Portal -- open access, no account required. Citizens,
-researchers and transparency advocates. Exposes only aggregate/historical
-data: no live bid amounts, no bidder contact details, no per-officer info.
+Public Tender Portal. Exposes only aggregate/historical data: no live bid
+amounts, no bidder contact details, no per-officer info. Requires a signed-in
+account (either role -- bidder or government) rather than a separate "public"
+account type, since there's nothing distinct to register for here.
 
     GET /api/public/tenders             published tenders (search)
     GET /api/public/awards              past awards & results
@@ -11,12 +12,13 @@ data: no live bid amounts, no bidder contact details, no per-officer info.
 
 from collections import defaultdict
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 
 from .. import db
+from ..deps import current_user
 from ..helpers import TODAY, tender_public
 
-router = APIRouter(tags=["public"])
+router = APIRouter(tags=["public"], dependencies=[Depends(current_user)])
 
 
 @router.get("/api/public/tenders")
