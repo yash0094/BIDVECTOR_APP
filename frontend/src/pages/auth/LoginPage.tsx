@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { Logo, LogoMark } from '../../components/Logo'
 import { Button, Field, inputCls } from '../../components/ui'
 import { Footer } from '../../components/Footer'
-import { GoogleSignInButton, useGoogleClientId } from '../../components/GoogleSignInButton'
 import { useAuth, type Role } from '../../lib/auth'
 import { api, ApiError } from '../../lib/api'
 import { IconBuilding, IconShieldAlert, IconUserCircle } from '../../components/Icons'
@@ -30,10 +29,9 @@ export function LoginPage({ role }: { role: Role }) {
   const [forgotSent, setForgotSent] = useState(false)
   const [pendingMessage, setPendingMessage] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const { login, loginWithGoogle, register } = useAuth()
+  const { login, register } = useAuth()
   const nav = useNavigate()
   const copy = COPY[role]
-  const googleClientId = useGoogleClientId()
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -58,19 +56,6 @@ export function LoginPage({ role }: { role: Role }) {
       }
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong')
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  async function onGoogleCredential(credential: string) {
-    setError(null)
-    setBusy(true)
-    try {
-      await loginWithGoogle(credential)
-      nav(copy.home)
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Google sign-in failed')
     } finally {
       setBusy(false)
     }
@@ -160,15 +145,6 @@ export function LoginPage({ role }: { role: Role }) {
                             onClick={() => setMode('forgot')}>
                       Forgot password?
                     </button>
-                  )}
-
-                  {role === 'bidder' && mode !== 'forgot' && googleClientId && (
-                    <>
-                      <div className="flex items-center gap-3 pt-1 text-[11px] text-ink-400">
-                        <span className="h-px flex-1 bg-ink-100" /> or continue with <span className="h-px flex-1 bg-ink-100" />
-                      </div>
-                      <GoogleSignInButton clientId={googleClientId} onCredential={onGoogleCredential} />
-                    </>
                   )}
                 </form>
               )}

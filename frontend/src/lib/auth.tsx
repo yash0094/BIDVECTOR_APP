@@ -14,7 +14,6 @@ interface AuthState {
   user: User | null
   loading: boolean
   login: (email: string, password: string) => Promise<User>
-  loginWithGoogle: (credential: string) => Promise<User>
   // Accounts are pending until a Government user approves them -- no token
   // is issued at registration time, just a confirmation message.
   register: (payload: Record<string, unknown>) => Promise<{ pending: true; message: string }>
@@ -45,13 +44,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return res.user as User
   }
 
-  async function loginWithGoogle(credential: string) {
-    const res = await api.post('/api/auth/google', { credential })
-    setToken(res.token)
-    setUser(res.user)
-    return res.user as User
-  }
-
   async function register(payload: Record<string, unknown>) {
     return await api.post('/api/auth/register', payload) as { pending: true; message: string }
   }
@@ -63,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )

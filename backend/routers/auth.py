@@ -12,13 +12,9 @@ government (procurement officer). The Public portal reuses either account
     POST /api/auth/request-password-reset  send a reset link if the email exists
     POST /api/auth/reset-password        consume a reset link, set a new password
     POST /api/auth/change-password       change password while signed in
-    POST /api/auth/google                sign in / register a bidder with a Google ID token
-    GET  /api/config                     runtime flags (Google client id)
 """
 
 import json
-import os
-import secrets
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -32,8 +28,6 @@ from ..helpers import TODAY, get_profile, get_org_profile
 from ..mailer import send_mail
 
 router = APIRouter(tags=["auth"])
-
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 
 ROLES = ("bidder", "government")
 
@@ -122,76 +116,6 @@ def register(body: RegisterIn):
             "message": "Your application has been submitted. A Government "
                        "Official will review and activate your account before "
                        "you can sign in."}
-
-
-@router.get("/api/config")
-def public_config():
-    """Lets the frontend know at runtime whether Google sign-in is usable."""
-    return {"google_client_id": GOOGLE_CLIENT_ID}
-
-
-@router.post("/api/auth/google")
-def google_sign_in(body: dict):
-    """Real Google sign-in: verifies the ID token Google itself issued against
-    Google's public keys (via the `google-auth` library). Requires
-    GOOGLE_CLIENT_ID in the environment. Bidder accounts only, same as the
-    "Continue with Google" button only appearing on the bidder login tab."""
-    if not GOOGLE_CLIENT_ID:
-        raise HTTPException(503, "Google sign-in is not configured on this server")
-
-    credential = body.get("credential")
-    if not credential:
-        raise HTTPException(400, "Missing required field: credential")
-
-    try:
-        from google.auth.transport import requests as google_requests
-        from google.oauth2 import id_token as google_id_token
-        idinfo = google_id_token.verify_oauth2_token(
-            credential, google_requests.Request(), GOOGLE_CLIENT_ID)
-    except Exception as exc:
-        # The client only gets a generic message (the real reason can be
-        # security-sensitive -- wrong audience, expired token, etc.), but the
-        # actual exception goes to the server log so this is debuggable.
-        print(f"[google-signin] verification failed: {exc!r}")
-        raise HTTPException(401, "Google sign-in failed: invalid or expired credential")
-
-    if not idinfo.get("email_verified", False):
-        raise HTTPException(401, "Google account email is not verified")
-
-    email = idinfo["email"].strip().lower()
-    user = db.query_one("SELECT * FROM users WHERE email=?", (email,))
-
-    if user and user["role"] != "bidder":
-        raise HTTPException(409, "This email is registered as a government account -- "
-                                 "sign in from that portal instead")
-
-    is_new = not user
-    if not user:
-        uid = db.execute(
-            "INSERT INTO users (email,password_hash,company_name,role,created_at) "
-            "VALUES (?,?,?,?,?)",
-            (email, hash_password(secrets.token_urlsafe(32)),
-             idinfo.get("name") or email.split("@")[0], "bidder", TODAY.isoformat()))
-        db.execute("""
-            INSERT INTO profiles (user_id,udyam_no,msme_class,bidder_class,turnover_cr,
-                experience_years,max_similar_work_cr,certifications,states,categories,
-                working_capital_cr,overhead_pct,target_margin_pct)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-            (uid, "", "Micro", "Class II", 0, 0, 0,
-             json.dumps(["GST", "PAN"]), json.dumps([]), json.dumps([]), 0.25, 12.0, 8.0))
-        user = db.query_one("SELECT * FROM users WHERE id=?", (uid,))
-
-    if user["status"] != "active":
-        if is_new:
-            raise HTTPException(403, "Your application has been submitted. A Government "
-                                     "Official will review and activate your account "
-                                     "before you can sign in.")
-        raise HTTPException(403, "Your account is pending approval by a Government Official.")
-
-    new_version = user["token_version"] + 1
-    db.execute("UPDATE users SET token_version=? WHERE id=?", (new_version, user["id"]))
-    return {"token": make_token(user["id"], user["email"], new_version),
-            "user": _public_user(user)}
 
 
 @router.post("/api/auth/login")

@@ -26,16 +26,14 @@ link in either portal's sidebar.
 
 ## Accounts
 
-Self-registration creates a **pending** account -- it can't sign in (email/
-password or Google) until an existing Government user approves it from the
-Government portal's Pending Approvals page. Seeded demo accounts are
-pre-activated. This applies to both bidder and government self-registrations.
+Self-registration creates a **pending** account -- it can't sign in until an
+existing Government user approves it from the Government portal's Pending
+Approvals page. Seeded demo accounts are pre-activated. This applies to both
+bidder and government self-registrations.
 
 It is a self-contained app with its own FastAPI backend, SQLite database,
-and React frontend -- no third-party API dependency. The one optional
-exception is Google Sign-In (Bidder portal), which calls Google's own
-servers to verify a credential when configured; without that configuration
-the app makes no external calls at all.
+and React frontend -- no third-party API dependency, and no external calls
+at all. Sign-in is plain email + password, nothing else.
 
 ## Architecture
 
@@ -58,11 +56,6 @@ the app makes no external calls at all.
 - **CORS** is off by default (the frontend is served by this same app).
   Set `BIDVECTOR_ALLOWED_ORIGINS` (comma-separated) only if serving the
   frontend from a different origin than the API.
-- **Google Sign-In** (Bidder portal only) is real, not a demo -- off until
-  configured. Set `GOOGLE_CLIENT_ID` in the server's environment; the
-  frontend picks it up at runtime from `GET /api/config`, no rebuild
-  required. See the SecureBid README this project was adapted from for the
-  full Google Cloud Console setup steps -- identical flow here.
 - **Export as PDF**: the analysis-heavy pages (EMD Allocator, Tender
   Analytics, Collusion Screen, the Government dashboard, Anomaly Signals,
   and the Public Statistics/Price Transparency pages) have an "Export as
